@@ -22,18 +22,20 @@ public class DetailThiTiengAnh extends AppCompatActivity {
     TextView txtIDThi, tvNho;
     String save;
     SharedPreferences sharedPreferences;
+    ThiTiengAnh thiTiengAnh;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_phep_tinh);
 
-        AnhXa();
+
 
         Intent intent = getIntent();
         if (intent != null){
-            ThiTiengAnh thiTiengAnh = (ThiTiengAnh) intent.getSerializableExtra("data");
-            txtIDThi.setText(thiTiengAnh.getTen_thi().toUpperCase());
+            thiTiengAnh = (ThiTiengAnh) intent.getSerializableExtra("data");
+
         }
+        AnhXa();
         btnTinhToan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -42,7 +44,13 @@ public class DetailThiTiengAnh extends AppCompatActivity {
                     Toast.makeText(DetailThiTiengAnh.this, "Vui lòng nhập ví dụ", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(DetailThiTiengAnh.this, "Nhập thành công", Toast.LENGTH_SHORT).show();
-
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.remove(thiTiengAnh.getId_thi());
+                    save=edtNum1.getText().toString()+"\n"+ save;
+                    editor.putString(thiTiengAnh.getId_thi(),save);
+                    editor.commit();
+                    edtNum1.setText("");
+                    tvNho.setText(save);
                 }
 
             }
@@ -54,6 +62,12 @@ public class DetailThiTiengAnh extends AppCompatActivity {
         txtIDThi = findViewById(R.id.id_thi);
         tvNho = findViewById(R.id.tvSave);
         btnTinhToan = findViewById(R.id.btnTinhToan);
-        sharedPreferences = getSharedPreferences("nho", MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences("data", MODE_PRIVATE);
+        Toast.makeText(this, thiTiengAnh.getId_thi(), Toast.LENGTH_SHORT).show();
+
+        txtIDThi.setText(thiTiengAnh.getTen_thi().toUpperCase());
+       save=sharedPreferences.getString(thiTiengAnh.getId_thi(),"");
+       tvNho.setText(save);
+
     }
 }
